@@ -72,7 +72,6 @@ void istoric_log(const char *hunt,const char *user, const char *operatie )
 	  return;
 	}
     }
- 
   close(fd);
 }
 bool checkcoordonate(double a, double b)
@@ -152,7 +151,9 @@ int add(treasure *tr, const char *hunt)
 	    close(fd);
 	    return 0;
 	  }
-    close(fd);
+    if(close(fd)==-1){
+    perror("NU s-a inchis fisierul");
+  }
     printf("--------------------------------------------------\n");
     return 1;
 }
@@ -192,7 +193,9 @@ void list(const char *hunt)
   int nr=nrtreasure(fd);
   printf("Numarul treasurilor este %d \n\n", nr);
   printf("--------------------------------------------------\n");
-  close(fd);
+  if(close(fd)==-1){
+    perror("NU s-a inchis fisierul");
+  }
 }
 void view(const char *hunt, const char *trea)
 {
@@ -226,7 +229,7 @@ char sir[MAXSTR],sir1[MAXSTR];
   int ok=0,numarare=0;
   while(read(fd,&t,sizeof(treasure))==sizeof(treasure))
     {numarare++;
-      if(strcmp(t.name,trea)==0)
+      if(strcmp(t.id,trea)==0)
 	{
 	  printf("Treasure id : %s \n Numele : %s \n Clue : %s\n Value : %d \n Coordonatele : %f,%f \n\n", t.id, t.name,t.clue,t.value,t.coordonate.longitudine, t.coordonate.latitudine);
 	  ok=1;
@@ -242,7 +245,9 @@ char sir[MAXSTR],sir1[MAXSTR];
       printf("Nu am gasit acest treasure hunt \n");
     }
   printf("--------------------------------------------------\n");
-   close(fd);
+  if(close(fd)==-1){
+    perror("NU s-a inchis fisierul");
+  }
 }
 void remove_hunt(const char *hunt)
 {
@@ -320,7 +325,7 @@ void remove_treasure(const char *hunt, const char *id)
       perror("Eroare la nivelul  fisierului \n");
       return;
     }
-  int fd=open(ss1,O_RDWR, S_IXUSR);
+  int fd=open(ss1,O_RDWR, S_IRUSR|S_IWUSR|S_IXUSR);
   if(fd==-1)
     {
       perror("eroare la deschiderea fisierului \n");
@@ -353,6 +358,8 @@ void remove_treasure(const char *hunt, const char *id)
       printf("Am sters cu succes treasure-ul cu id ul %s \n",id);
     }
   free(all);
-  close(fd);
+ if(close(fd)==-1){
+    perror("NU s-a inchis fisierul");
+  }
   printf("--------------------------------------------------\n");
 }

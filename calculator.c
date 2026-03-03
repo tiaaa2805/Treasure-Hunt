@@ -18,7 +18,8 @@ typedef struct{
   char user[Max];
   int points;
 }results;
-int getvalue(char *hunt, char *tres)
+char utilizator[Max]={0};
+int getvalue(char *hunt, char *tres, char *utilizator)
 {
   int valoare=0;
    char cale[Max];
@@ -41,14 +42,20 @@ int getvalue(char *hunt, char *tres)
 	}
       while(read(fdfisier,&tr,sizeof(treasure))==sizeof(treasure))
 	{
-	  if(strcmp(tres,tr.name)==0)
+	  if(strcmp(tres,tr.id)==0)
 	    {
 	      valoare=tr.value;
+	      strcpy(utilizator,tr.name);
 	      break;
 	    }
 	}
-      close(fdfisier);
-  closedir(huntdir);
+     
+  if(close(fdfisier)==-1){
+    perror("NU s-a inchis fisierul");
+  }
+  if(closedir(huntdir)==-1){
+    perror("NU s-a inchis fisierul");
+  }
   return valoare;
 }
 void check( int fd, results *implementare)
@@ -64,14 +71,13 @@ void check( int fd, results *implementare)
 	  if(write(fd,implementare,sizeof(results))!=sizeof(results))
 	    {
 	      perror("eroare la scrierea in fisier\n");
-	      
 	      exit(1);
 	    }
 	  break;
 	}
     }
   if(ok==0)
-    {printf("suntem aici ");
+    {
        if(write(fd,implementare,sizeof(results))!=sizeof(results))
 	    {
 	      perror("eroare la scrierea in fisier\n");
@@ -81,12 +87,12 @@ void check( int fd, results *implementare)
     }
   
 }
- 
+
 int main(int argc, char *argv[])
 {
   if(argc<3)
     {
-      printf("Trebuiau introduse numele hunt-ului si numele treasure-lui\n");
+      printf("Trebuiau introduse numele hunt-ului si id-ul treasure-lui\n");
       exit(-1);
     }
   char *hunt=argv[1];
@@ -98,9 +104,10 @@ int main(int argc, char *argv[])
       perror("Eroare la deschiderea fisierului pentru scrierea comenzilor\n");
       exit(-1);
     }
-  int val=getvalue(hunt,tres);
+   
+  int val=getvalue(hunt,tres,utilizator );
   printf("%d\n",val);
-  char *utilizator=userr();
+  printf("%s\n",utilizator);
   results implementare;
   snprintf(implementare.user,Max,"%s",utilizator);
   implementare.points=val;
@@ -113,6 +120,8 @@ int main(int argc, char *argv[])
       printf("Utilizatorul este : %s, iar numarul sau de puncte este %d\n",o.user,o.points);
     }
   /// printf("Scriu:%s \n",implementare);
-  close(fd);
+  if(close(fd)==-1){
+    perror("NU s-a inchis fisierul");
+  }
   return 0;
 }

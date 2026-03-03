@@ -12,7 +12,6 @@
 #include<limits.h>
 #include<sys/wait.h>
 #include<stdbool.h>
-
 #include"treasur.h"
 #define Max2 60
 #define Maxx2 260
@@ -56,7 +55,11 @@ void write_intxt(const char *c)
       close(fd);
       return ;
     }
-  close(fd);
+  if(close(fd)==-1)
+    {
+      perror("Eroare la inchidere ");
+      
+    }
 }
 int command(const char *buff)
 {
@@ -75,7 +78,7 @@ void handler_view_treasure()
 }
 void handler_list_treasures()
 {
-  printf("hdhfhdf"); 
+ 
   if(monitor_stop==0)
     {
       list(hunt);
@@ -123,7 +126,10 @@ void handler_list_directory()
 		           int fisier=open(cale, O_RDONLY,S_IRUSR);
 		           int nr=nrtreasure(fisier);
 		           printf("\tNumarul treasurilor este %d \n\n", nr);
-		           close(fisier);
+			   if( close(fisier)==-1)
+			     {
+			       perror("Eroare la inchidere fisier \n");
+			     }
 			   break;
 		    }
 		}
@@ -148,7 +154,7 @@ void setup_for_sigaction(int sig)
       usr1=1;
       break;
     case SIGUSR2:
-      printf("Ne ocupam de listarea treasure_urilor dintr-un hunt\n");
+      printf("Ne ocupam de listarea treasure-urilor dintr-un hunt\n");
       usr2=1;
       break;
     case SIGTERM :

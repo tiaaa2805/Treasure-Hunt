@@ -1,0 +1,25 @@
+#include<stdint.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include<string.h>
+#include <errno.h>
+#include<time.h>
+#include<dirent.h>
+#include<signal.h>
+#include<limits.h>
+#include<sys/wait.h>
+#include<stdbool.h>
+#include"treasur.h"
+#define Max 500
+
+void calculator()
+{
+}
+int main()
+{
+  int fd=open("
+  return 0;
+}
